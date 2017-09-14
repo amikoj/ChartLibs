@@ -16,7 +16,7 @@ import cn.enjoytoday.chart.dip2px
  * @date 17-9-4.
  * @className PieChart
  * @serial 1.0.0
- *
+ * @author hfcai
  *
  *自定义扇形图表
  */

@@ -8,6 +8,13 @@ package cn.enjoytoday.chart
  * 图表数据类
  */
 class PartModel(var value:Float){
+
+
+    constructor(value: Float,tagName:String,tagId:String):this(value){
+        this.value=value
+        this.tagName=tagName
+        this.tagId=tagId
+    }
     var tagId:String?=null
     var color:Int=-1
 

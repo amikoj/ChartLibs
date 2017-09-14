@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ChartDemo</string>
+
+
+    <string-array name="titles">
+        <item>饼图</item>
+        <item>线性图</item>
+        <item>条形图</item>
+    </string-array>
+
+
+</resources>

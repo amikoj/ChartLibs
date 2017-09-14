@@ -1,3 +1,6 @@
+/**
+ *
+ */
 package cn.enjoytoday.chart.widget
 
 import android.content.Context
@@ -12,9 +15,12 @@ import cn.enjoytoday.chart.PartModel
 import cn.enjoytoday.chart.OnSelectedListener
 
 /**
+ *
+ *
  * @date 17-9-5.
  * @className BarChart
  * @serial 1.0.0
+ * @author hfcai
  */
 class BarChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int): View(context,attributeset,defStyleAttr){
     init {
@@ -30,7 +36,7 @@ class BarChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
 
 
 
-    var listBar:MutableList<PartModel> = mutableListOf()
+    private var listBar:MutableList<PartModel> = mutableListOf()
 
 
     var width=0f
@@ -115,14 +121,14 @@ class BarChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
     var onSelectedListener: OnSelectedListener?=null
 
 
-    val postHandler=object : Handler() {
+    private val postHandler=object : Handler() {
         override fun handleMessage(msg: Message?) {
             when (msg!!.what){
                REFRESH_UI -> invalidate()
 
                 CALCUATE_COORIDNATE -> {
                     if (isSizeChanged){
-                        calcuateCooridnate(false)
+                        calculateCoordinate(false)
                     }
 
                 }
@@ -216,7 +222,7 @@ class BarChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
         listBar = list
         currentIndex=listBar.size/2
         if (isSizeChanged){
-            calcuateCooridnate(false)
+            calculateCoordinate(false)
         }
 
 
@@ -228,7 +234,7 @@ class BarChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
      * @param isMoved 是否属于移动操作
      * @param moved 移动操作的移动大小(方向定为从做到右为正方向)
      */
-    fun calcuateCooridnate(isMoving:Boolean,moved:Float=0f){
+    fun calculateCoordinate(isMoving:Boolean,moved:Float=0f){
         if (listBar.size==0) return
 //        log(message = "calcuateCooridnate")
         if (isMoving){
@@ -398,7 +404,7 @@ var rectF: RectF = RectF()
                         if (!isMoving) {
                             isMoving = true
                         }
-                        calcuateCooridnate(true, x - pre_x!!)
+                        calculateCoordinate(true, x - pre_x!!)
                         pre_x = x
                         pre_y = y
 
@@ -407,7 +413,7 @@ var rectF: RectF = RectF()
 
                 MotionEvent.ACTION_UP -> {
                     if (pre_x != null && pre_y != null) {
-                        calcuateCooridnate(false)
+                        calculateCoordinate(false)
                     }
                     pre_x = null
                     pre_y = null

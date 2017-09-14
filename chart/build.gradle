@@ -32,4 +32,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    compile 'com.github.devlight.navigationtabstrip:navigationtabstrip:1.0.4'
 }

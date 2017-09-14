@@ -1,11 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="cn.enjoytoday.chartlibs.MainActivity">
 
 
+    <com.gigamole.navigationtabstrip.NavigationTabStrip
+        android:id="@+id/nts"
+        android:layout_width="395dp"
+        android:layout_height="50dp"
+        app:nts_color="#0000ff"
+        app:nts_size="15sp"
+        app:nts_weight="2dp"
+        app:nts_factor="2.5"
+        app:nts_titles="@array/titles"
+        app:nts_type="line"
+        app:nts_gravity="bottom"
+        app:nts_corners_radius="1.5dp"
+        app:nts_animation_duration="300"
+        app:nts_active_color="#00ff00"
+        app:nts_inactive_color="@android:color/darker_gray"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="8dp" />
 
-</android.support.constraint.ConstraintLayout>
+
+    <android.support.v4.view.ViewPager
+        android:layout_marginTop="20dip"
+        android:padding="10dip"
+        android:id="@+id/view_pager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+      />
+
+</LinearLayout>

@@ -14,32 +14,33 @@ import java.util.ArrayList
  * @date 17-9-6.
  * @className LineChart
  * @serial 1.0.0
+ * @author hfcai
  * 线性图
  * 
  * 
  */
 class LineChart(context: Context, attrs: AttributeSet?, defStyleAttr: Int): View(context,attrs,defStyleAttr) {
-     var viewWith: Float = 0.toFloat()
-     var viewHeight: Float = 0.toFloat()
+     private var viewWith: Float = 0.toFloat()
+     private var viewHeight: Float = 0.toFloat()
 
-     val brokenLineWith = 0.5f
+     private val brokenLineWith = 0.5f
 
-     var brokenLineColor = Color.parseColor("#00d9ff")
-     val straightLineColor = Color.parseColor("#aaaaaa")
-     val textNormalColor = Color.parseColor("#aaaaaa")
+     private var brokenLineColor = Color.parseColor("#00d9ff")
+     private val straightLineColor = Color.parseColor("#aaaaaa")
+     private val textNormalColor = Color.parseColor("#aaaaaa")
 
      var maxScore = 700f
      var minScore = 0f
 
      var monthCount = 7
-     var selectMonth = 7//选中的月份
+     private var selectMonth = 7//选中的月份
 
      var monthText = mutableListOf("6", "7", "8", "9", "10", "11")
-     var score = mutableListOf(660f, 663f, 669f, 678f, 682f, 689f)
+    var score = mutableListOf(660f, 663f, 669f, 678f, 682f, 689f)
 
-     var scorePoints: MutableList<Point>? = null
+     private var scorePoints: MutableList<Point>? = null
 
-     var textSize = dip2px(context,8f)
+     private var textSize = dip2px(context,8f)
 
     private var brokenPaint: Paint? = null
     private var straightPaint: Paint? = null

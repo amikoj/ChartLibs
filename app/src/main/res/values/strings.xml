@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">ChartLibs</string>
+    <string name="app_name">ChartDemo</string>
+
+    <string-array name="titles">
+        <item>Pie</item>
+        <item>Line</item>
+        <item>Bar</item>
+    </string-array>
 </resources>
