@@ -223,7 +223,7 @@ class LineChart(context: Context, attrs: AttributeSet?, defStyleAttr: Int): View
     /**
      * 测量文字的宽度
      */
-    fun getStrWidth(text:String,paint: Paint):Float{
+    private fun getStrWidth(text:String,paint: Paint):Float{
      return    paint.measureText(text)
     }
 
@@ -232,7 +232,7 @@ class LineChart(context: Context, attrs: AttributeSet?, defStyleAttr: Int): View
 
 
     //绘制折线穿过的点
-     fun drawPoint(canvas: Canvas) {
+    private fun drawPoint(canvas: Canvas) {
         if (scorePoints == null) {
             return
         }

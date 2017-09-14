@@ -13,6 +13,7 @@ import android.view.View
 import cn.enjoytoday.chart.dip2px
 import cn.enjoytoday.chart.PartModel
 import cn.enjoytoday.chart.OnSelectedListener
+import cn.enjoytoday.chart.log
 
 /**
  *
@@ -36,68 +37,69 @@ class BarChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
 
 
 
+
     private var listBar:MutableList<PartModel> = mutableListOf()
 
 
     var width=0f
     var height=0f
 
-    var padding=dip2px(context,8f)
+    private var padding=dip2px(context,8f)
 
     /**
      * bar的宽度
      */
-    var unitWidth=0f
+    private var unitWidth=0f
 
 
     /**
      * 正常状况下的坐标字体颜色
      */
-    var normalCooridnateColor= Color.GRAY
+    private var normalCooridnateColor= Color.GRAY
 
 
     /**
      * 选中情况下的坐标字体颜色
      */
-    var selectedCooridnateColor= Color.WHITE
+    private var selectedCooridnateColor= Color.WHITE
 
 
     /**
      * View背景色
      */
-    var bgColor = Color.parseColor("#00d9ff")
+    private var bgColor = Color.parseColor("#00d9ff")
 
 
     /**
      * 正常状态下的bar的颜色
      */
-    var normalBarColor = Color.parseColor("#aaffffff")
+    private var normalBarColor = Color.parseColor("#aaffffff")
 
 
     /**
      * 选中后的bar的颜色
      */
-    var selectedBarColor= Color.parseColor("#ffffffff")
+    private var selectedBarColor= Color.parseColor("#ffffffff")
 
 
 
-    var currentIndex=0
+    private var currentIndex=0
 
 
-    var textbgColor= Color.parseColor("#dddddd")
+    private var textbgColor= Color.parseColor("#dddddd")
 
-    var textHeight=dip2px(context,20f)
+    private var textHeight=dip2px(context,20f)
 
     /**
      * 坐标轴text字体大小
      */
-    var cooridnateTextSize=dip2px(context,8f)
+    private var cooridnateTextSize=dip2px(context,8f)
 
 
     /**
      * bar paint
      */
-    var paint: Paint = Paint()
+    private var paint: Paint = Paint()
 
     /**
      * 绘制坐标轴
@@ -119,6 +121,7 @@ class BarChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
     var isSizeChanged=false
 
     var onSelectedListener: OnSelectedListener?=null
+
 
 
     private val postHandler=object : Handler() {
@@ -218,15 +221,21 @@ class BarChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
         /**
          * 对list进行排序,按降序排列
          */
-//        log(message = "setlist,and list size:${list.size}")
+        log(message = "setlist,and list size:${list.size}")
         listBar = list
         currentIndex=listBar.size/2
+
+
+
+
         if (isSizeChanged){
             calculateCoordinate(false)
         }
 
 
     }
+
+    var max=0f
 
 
     /**
@@ -236,7 +245,7 @@ class BarChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
      */
     fun calculateCoordinate(isMoving:Boolean,moved:Float=0f){
         if (listBar.size==0) return
-//        log(message = "calcuateCooridnate")
+        log(message = "calcuateCooridnate")
         if (isMoving){
             /**
              * 移动操作
@@ -256,8 +265,11 @@ class BarChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
              * 确认坐标
              */
             listBar.forEachIndexed { index, partModel ->
+
                 partModel.startAngle=gap+index*(unitWidth+gap)
-                partModel.sweep=partModel.value*(height-3*padding-textHeight)/listBar[0].value
+                partModel.sweep=partModel.value*(height-3*padding-textHeight)/max
+
+                log(message = "sweep:${partModel.sweep}")
             }
 
 
@@ -280,7 +292,7 @@ class BarChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
 
 
 
-var rectF: RectF = RectF()
+private var rectF: RectF = RectF()
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
@@ -298,6 +310,7 @@ var rectF: RectF = RectF()
         paint.color=bgColor
         canvas.drawRect(rectF,paint)
 
+        log(message = "height:$height,and width:$width")
 
         /**
          * 坐标轴
@@ -309,7 +322,7 @@ var rectF: RectF = RectF()
         if (listBar.size>0) {
             listBar.forEachIndexed { index, partModel ->
                 if (partModel.startAngle>=0-unitWidth && partModel.startAngle<=width+unitWidth){
-//                    log(message = "partmodel startAngle:${partModel.startAngle} value:${partModel.value},height:${partModel.sweep}")
+                    log(message = "partmodel startAngle:${partModel.startAngle} value:${partModel.value},sweep:${partModel.sweep}")
                     /**
                      * 范围内绘制
                      */
@@ -377,10 +390,10 @@ var rectF: RectF = RectF()
     }
 
 
-    var pre_x:Float?=null
-    var pre_y:Float?=null
+    private var pre_x:Float?=null
+    private var pre_y:Float?=null
 
-    var isMoving=false
+    private var isMoving=false
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (listBar.size>0) {

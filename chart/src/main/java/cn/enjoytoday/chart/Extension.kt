@@ -1,6 +1,7 @@
 package cn.enjoytoday.chart
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 
 /**
@@ -23,4 +24,10 @@ fun View.dip2px(context: Context, dpValue: Float): Float {
 fun View.px2dip(context: Context, pxValue: Float): Float {
     val scale = context.resources.displayMetrics.density
     return pxValue / scale + 0.5f
+}
+
+
+fun Any.log(tag:String=this.javaClass.canonicalName,message:String){
+    Log.e(tag,message)
+
 }

@@ -1,5 +1,6 @@
 package cn.enjoytoday.chart.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.os.Handler
@@ -10,6 +11,7 @@ import android.view.View
 import cn.enjoytoday.chart.PartModel
 import cn.enjoytoday.chart.OnSelectedListener
 import cn.enjoytoday.chart.dip2px
+import cn.enjoytoday.chart.log
 
 
 /**
@@ -78,11 +80,14 @@ class PieChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
     val postHandler=object : Handler() {
         override fun handleMessage(msg: Message?) {
             when (msg!!.what){
-                REFRESH_UI -> invalidate()
+                REFRESH_UI -> {
+
+                    invalidate()
+                }
 
                 CALCUATE_COORIDNATE -> {
                     if (isSizeChanged){
-                        calcuateCooridnate(false,null,currentBarIndex)
+                        calculateCoordinate(false,null,currentBarIndex)
                     }
 
                 }
@@ -161,7 +166,7 @@ class PieChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
     fun  addModel(model: PartModel){
         listBar.add(model)
         max += model.value
-        calcuateCooridnate(false,null,currentBarIndex)
+        calculateCoordinate(false,null,currentBarIndex)
     }
 
 
@@ -171,7 +176,7 @@ class PieChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
     fun addList(list:MutableList<PartModel>){
         listBar.addAll(list)
         list.forEach { max+=it.value }
-        calcuateCooridnate(false,null,currentBarIndex)
+        calculateCoordinate(false,null,currentBarIndex)
 
     }
 
@@ -197,7 +202,7 @@ class PieChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
             }
             max+=partModel.value
         }
-        calcuateCooridnate(false,null,currentBarIndex)
+        calculateCoordinate(false,null,currentBarIndex)
 
     }
 
@@ -213,10 +218,12 @@ class PieChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
         super.onSizeChanged(w, h, oldw, oldh)
     }
 
-    val paint: Paint = Paint()
-    val textPaint: Paint = Paint()
+    private val paint: Paint = Paint()
+    private val textPaint: Paint = Paint()
 
     override fun onDraw(canvas: Canvas) {
+
+
 
 
         paint.isAntiAlias=true
@@ -249,8 +256,12 @@ class PieChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
 
 
         }else {
+
+
+
             listBar.forEachIndexed { index, partModel ->
-//                            log(message = "partmodel startAngle:${partModel.startAngle} value:${partModel.value},height:${partModel.sweep}")
+
+//                log(message = "partmodel startAngle:${partModel.startAngle} value:${partModel.value},sweep:${partModel.sweep}")
                 paint.color = partModel.color
 
                 val startAngle = partModel.startAngle
@@ -259,9 +270,9 @@ class PieChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
                     /**
                      * 被选中
                      */
-                    val offerset_angle = partModel.startAngle + partModel.sweep / 2f
-                    val offset_center_x = center_x + offerset_radius * Math.cos(Math.toRadians(offerset_angle.toDouble())).toFloat()
-                    val offset_center_y = center_y + offerset_radius * Math.sin(Math.toRadians(offerset_angle.toDouble())).toFloat()
+                    val offset_angle = partModel.startAngle + partModel.sweep / 2f
+                    val offset_center_x = center_x + offerset_radius * Math.cos(Math.toRadians(offset_angle.toDouble())).toFloat()
+                    val offset_center_y = center_y + offerset_radius * Math.sin(Math.toRadians(offset_angle.toDouble())).toFloat()
                     rectF.set(offset_center_x - inter_ring_radius, offset_center_y - inter_ring_radius,
                             offset_center_x + inter_ring_radius, offset_center_y + inter_ring_radius)
                     currentBarIndex = index
@@ -288,7 +299,7 @@ class PieChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
     /**
      * 设置当前选择
      */
-    fun setCurrentBarIndex(currentIndex: Int?){
+    private fun setCurrentBarIndex(currentIndex: Int?){
         currentIndex?:return
 
         val startAngle=listBar[currentIndex].startAngle
@@ -306,18 +317,18 @@ class PieChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
 //        log(message = "after offset is:$offset")
         val times=Math.abs(offset/20f).toInt()
         if (times<=1){
-            calcuateCooridnate(true,offset,currentIndex)
+            calculateCoordinate(true,offset,currentIndex)
         }else {
             val unit=offset/times
             handler.postDelayed(object:Runnable{
                 var n=0
                 override fun run() {
                     if (n<times) {
-                        calcuateCooridnate(true, unit, currentIndex)
+                        calculateCoordinate(true, unit, currentIndex)
                         n++
                         handler.postDelayed(this,100)
                     }else{
-                        calcuateCooridnate(true, offset-unit*n, currentIndex)
+                        calculateCoordinate(true, offset-unit*n, currentIndex)
                     }
                 }
 
@@ -332,7 +343,7 @@ class PieChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
     /**
      * 获取当前选中index的开始角度
      */
-    fun getStartAngleByCurrentIndex(currentIndex: Int):Float{
+    private fun getStartAngleByCurrentIndex(currentIndex: Int):Float{
 
         val bar=listBar[currentIndex]
        return (90f-bar.sweep/2f+360)%360
@@ -346,12 +357,12 @@ class PieChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
     /**
      * 根据x,y轴坐标求相对坐标,范围(0,360)
      */
-    fun getAngelByCooridnate(cooridnate_x:Float,cooridnate_y: Float):Float{
+    private fun getAngelByCoordinate(cooridnate_x:Float, cooridnate_y: Float):Float{
 
 
-        val offerset_y=center_y-cooridnate_y
+        val offset_y=center_y-cooridnate_y
         val distance=Math.sqrt(((cooridnate_x-center_x)*(cooridnate_x-center_x)+(cooridnate_y-center_y)*(cooridnate_y-center_y)).toDouble())
-        var angle=Math.asin(offerset_y/distance)/2f/Math.PI*360
+        var angle=Math.asin(offset_y/distance)/2f/Math.PI*360
         if (cooridnate_x<center_x){
             angle=180-angle
         }
@@ -365,8 +376,8 @@ class PieChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
     /**
      * 计算角度坐标
      */
-    fun calcuateCooridnate(isMove:Boolean,moved:Float?,currentIndex:Int?){
-//        log(message = "calcuateCooridnate")
+   private fun calculateCoordinate(isMove:Boolean, moved:Float?, currentIndex:Int?){
+//        log(message = "calculateCoordinate")
         if (isMove ) {
             /**
              * 滑动时移动处理,手指未离开屏幕
@@ -390,7 +401,7 @@ class PieChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
                 if (totalAngle+sweep>360){
                     sweep=360-totalAngle
                 }
-//                log(message = "sweep is:$sweep")
+
                 partModel.sweep=sweep
                 if (index==0){
                     /**
@@ -406,6 +417,9 @@ class PieChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
                 totalAngle+=partModel.sweep
 
             }
+
+
+
 
             invalidate()
 
@@ -429,6 +443,7 @@ class PieChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
 
 
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
 
         if (listBar.size>0) {
@@ -449,8 +464,8 @@ class PieChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
                     val offset_y = Math.abs(pre_y!! - y)
 //                log(message = "actionMove offset_x:$offset_x,and offset_y:$offset_y")
                     if (pre_x != null && pre_y != null && (offset_x >= 10f || offset_y >= 10f)) {
-                        val sweep = getAngelByCooridnate(x, y) - getAngelByCooridnate(pre_x!!, pre_y!!)
-                        calcuateCooridnate(true, sweep, currentBarIndex)
+                        val sweep = getAngelByCoordinate(x, y) - getAngelByCoordinate(pre_x!!, pre_y!!)
+                        calculateCoordinate(true, sweep, currentBarIndex)
 
 
                         if (!isMoving) isMoving = true
@@ -460,8 +475,8 @@ class PieChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
                 }
                 MotionEvent.ACTION_UP -> {
                     if (pre_x != null && pre_y != null) {
-                        val sweep = getAngelByCooridnate(x, y) - getAngelByCooridnate(pre_x!!, pre_y!!)
-                        calcuateCooridnate(true, sweep, currentBarIndex)
+                        val sweep = getAngelByCoordinate(x, y) - getAngelByCoordinate(pre_x!!, pre_y!!)
+                        calculateCoordinate(true, sweep, currentBarIndex)
                         setCurrentBarIndex(currentBarIndex)
                     }
                     pre_x = null
