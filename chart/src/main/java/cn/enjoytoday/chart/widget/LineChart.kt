@@ -35,7 +35,7 @@ class LineChart(context: Context, attrs: AttributeSet?, defStyleAttr: Int): View
      var minScore = 0f
 
      var monthCount = 7
-     private var selectMonth = 7//选中的月份
+     private var selectMonth = 7
 
      var monthText = mutableListOf("6", "7", "8", "9", "10", "11")
     var score = mutableListOf(660f, 663f, 669f, 678f, 682f, 689f)
@@ -122,13 +122,11 @@ class LineChart(context: Context, attrs: AttributeSet?, defStyleAttr: Int): View
         val maxScoreYCoordinate = viewHeight * 0.15f
         val minScoreYCoordinate = viewHeight * 0.4f
 
-        Log.v("ScoreTrend", "initData: " + maxScoreYCoordinate)
 
-        val newWith = viewWith - viewWith * 0.15f * 2//分隔线距离最左边和最右边的距离是0.15倍的viewWith
+        val newWith = viewWith - viewWith * 0.15f * 2
         var coordinateX: Int
 
         for (i in score.indices) {
-            Log.v("ScoreTrend", "initData: " + score[i])
             val point = Point()
             coordinateX = (newWith * (i.toFloat() / (monthCount - 1)) + viewWith * 0.15f).toInt()
             point.x = coordinateX
@@ -162,8 +160,7 @@ class LineChart(context: Context, attrs: AttributeSet?, defStyleAttr: Int): View
 
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        this.parent.requestDisallowInterceptTouchEvent(true)//一旦底层View收到touch的action后调用这个方法那么父层View就不会再调用onInterceptTouchEvent了，也无法截获以后的action
-
+        this.parent.requestDisallowInterceptTouchEvent(true)
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
             }
@@ -186,11 +183,8 @@ class LineChart(context: Context, attrs: AttributeSet?, defStyleAttr: Int): View
         }
     }
 
-    //是否是有效的触摸范围
     private fun validateTouch(x: Float, y: Float): Boolean {
-        //曲线触摸区域
         for (i in scorePoints!!.indices) {
-            // dip2px(8)乘以2为了适当增大触摸面积
             if (x > scorePoints!![i].x - dip2px(context,8f) * 2 && x < scorePoints!![i].x + dip2px(context,8f) * 2) {
                 if (y > scorePoints!![i].y - dip2px(context,8f) * 2 && y < scorePoints!![i].y + dip2px(context,8f) * 2) {
                     selectMonth = i + 1
@@ -199,11 +193,9 @@ class LineChart(context: Context, attrs: AttributeSet?, defStyleAttr: Int): View
             }
         }
 
-        //月份触摸区域
-        //计算每个月份X坐标的中心点
-        val monthTouchY = viewHeight * 0.7f - dip2px(context,3f)//减去dip2px(3)增大触摸面积
+        val monthTouchY = viewHeight * 0.7f - dip2px(context,3f)
 
-        val newWith = viewWith - viewWith * 0.15f * 2//分隔线距离最左边和最右边的距离是0.15倍的viewWith
+        val newWith = viewWith - viewWith * 0.15f * 2
         val validTouchX = FloatArray(monthText.size)
         for (i in monthText.indices) {
             validTouchX[i] = newWith * (i.toFloat() / (monthCount - 1)) + viewWith * 0.15f
@@ -211,9 +203,7 @@ class LineChart(context: Context, attrs: AttributeSet?, defStyleAttr: Int): View
 
         if (y > monthTouchY) {
             for (i in validTouchX.indices) {
-                Log.v("ScoreTrend", "validateTouch: validTouchX:" + validTouchX[i])
                 if (x < validTouchX[i] + dip2px(context,8f) && x > validTouchX[i] - dip2px(context,8f)) {
-                    Log.v("ScoreTrend", "validateTouch: " + (i + 1))
                     selectMonth = i + 1
                     return true
                 }
@@ -234,7 +224,7 @@ class LineChart(context: Context, attrs: AttributeSet?, defStyleAttr: Int): View
 
 
 
-    //绘制折线穿过的点
+
     private fun drawPoint(canvas: Canvas) {
         if (scorePoints == null) {
             return
@@ -252,11 +242,9 @@ class LineChart(context: Context, attrs: AttributeSet?, defStyleAttr: Int): View
                 brokenPaint!!.color = 0xff81dddb.toInt()
                 canvas.drawCircle(scorePoints!![i].x.toFloat(), scorePoints!![i].y.toFloat(), dip2px(context,5f), brokenPaint!!)
 
-                //绘制浮动文本背景框
                 drawFloatTextBackground(score[i].toString(),canvas, scorePoints!![i].x, scorePoints!![i].y - dip2px(context,8f))
 
                 textPaint!!.color = 0xffffffff.toInt()
-                //绘制浮动文字
                 canvas.drawText(score[i].toString(), scorePoints!![i].x.toFloat(), (scorePoints!![i].y - dip2px(context,5f) - textSize), textPaint!!)
 
                 onSelectedListener?.onSelectedListener(i, PartModel(score[i]))
@@ -269,13 +257,13 @@ class LineChart(context: Context, attrs: AttributeSet?, defStyleAttr: Int): View
         }
     }
 
-    //绘制月份的直线(包括刻度)
+
     private fun drawMonthLine(canvas: Canvas) {
-        straightPaint!!.strokeWidth = dip2px(context,1f).toFloat()
+        straightPaint!!.strokeWidth = dip2px(context,1f)
         canvas.drawLine(0f, viewHeight * 0.7f, viewWith, viewHeight * 0.7f, straightPaint!!)
 
-        val newWith = viewWith - viewWith * 0.15f * 2//分隔线距离最左边和最右边的距离是0.15倍的viewWith
-        var coordinateX: Float//分隔线X坐标
+        val newWith = viewWith - viewWith * 0.15f * 2
+        var coordinateX: Float
         for (i in 0..monthCount - 1) {
             coordinateX = newWith * (i.toFloat() / (monthCount - 1)) + viewWith * 0.15f
             canvas.drawLine(coordinateX, viewHeight * 0.7f, coordinateX, viewHeight * 0.7f + dip2px(context,4f), straightPaint!!)
@@ -290,7 +278,6 @@ class LineChart(context: Context, attrs: AttributeSet?, defStyleAttr: Int): View
         if (score.size == 0) {
             return
         }
-        Log.v("ScoreTrend", "drawBrokenLine: " + scorePoints!![0])
         brokenPath!!.moveTo(scorePoints!![0].x.toFloat(), scorePoints!![0].y.toFloat())
         for (i in scorePoints!!.indices) {
             brokenPath!!.lineTo(scorePoints!![i].x.toFloat(), scorePoints!![i].y.toFloat())
@@ -299,7 +286,6 @@ class LineChart(context: Context, attrs: AttributeSet?, defStyleAttr: Int): View
 
     }
 
-    //绘制文本
     private fun drawText(canvas: Canvas) {
         textPaint!!.textSize = dip2px(context,12f)
         textPaint!!.color = textNormalColor
@@ -308,8 +294,8 @@ class LineChart(context: Context, attrs: AttributeSet?, defStyleAttr: Int): View
         canvas.drawText(minScore.toString(), viewWith * 0.1f - dip2px(context,10f), viewHeight * 0.4f + textSize * 0.25f, textPaint!!)
         textPaint!!.color = 0xff7c7c7c.toInt()
 
-        val newWith = viewWith - viewWith * 0.15f * 2//分隔线距离最左边和最右边的距离是0.15倍的viewWith
-        var coordinateX: Float//分隔线X坐标
+        val newWith = viewWith - viewWith * 0.15f * 2
+        var coordinateX: Float
         textPaint!!.textSize = dip2px(context,12f)
         textPaint!!.style = Paint.Style.FILL
         textPaint!!.color = textNormalColor
@@ -329,8 +315,6 @@ class LineChart(context: Context, attrs: AttributeSet?, defStyleAttr: Int): View
                 r2.bottom = viewHeight * 0.7f + dip2px(context,4f) + textSize + dip2px(context,8f)
                 canvas.drawRoundRect(r2, 10f, 10f, textPaint!!)
 
-
-
             }
 
 
@@ -345,43 +329,26 @@ class LineChart(context: Context, attrs: AttributeSet?, defStyleAttr: Int): View
 
     }
 
-    //绘制显示浮动文字的背景
     private fun drawFloatTextBackground(text: String, canvas: Canvas, x: Int, y: Float) {
         brokenPath!!.reset()
         brokenPaint!!.color = brokenLineColor
         brokenPaint!!.style = Paint.Style.FILL
         val textWidth=getStrWidth(text,brokenPaint!!)
-
-        //P1
         val point = Point(x, y.toInt())
         brokenPath!!.moveTo(point.x.toFloat(), point.y.toFloat())
-
-        //P2
         point.x = (point.x + dip2px(context,5f)).toInt()
         point.y = (point.y - dip2px(context,5f)).toInt()
         brokenPath!!.lineTo(point.x.toFloat(), point.y.toFloat())
-
-        //P3
         point.x = (point.x + dip2px(context,(textWidth-10f)/2f+4f)).toInt()
         brokenPath!!.lineTo(point.x.toFloat(), point.y.toFloat())
-
-        //P4
         point.y = (point.y - dip2px(context,17f)).toInt()
         brokenPath!!.lineTo(point.x.toFloat(), point.y.toFloat())
-
-        //P5
         point.x = (point.x - dip2px(context,textWidth+8f)).toInt()
         brokenPath!!.lineTo(point.x.toFloat(), point.y.toFloat())
-
-        //P6
         point.y = (point.y + dip2px(context,17f)).toInt()
         brokenPath!!.lineTo(point.x.toFloat(), point.y.toFloat())
-
-        //P7
         point.x = (point.x + dip2px(context,(textWidth-10f)/2f+2f)).toInt()
         brokenPath!!.lineTo(point.x.toFloat(), point.y.toFloat())
-
-        //最后一个点连接到第一个点
         brokenPath!!.lineTo(x.toFloat(), y)
 
         canvas.drawPath(brokenPath!!, brokenPaint!!)
@@ -403,10 +370,8 @@ class LineChart(context: Context, attrs: AttributeSet?, defStyleAttr: Int): View
     private fun drawDottedLine(canvas: Canvas, startX: Float, startY: Float, stopX: Float, stopY: Float) {
         dottedPaint!!.pathEffect = DashPathEffect(floatArrayOf(20f, 10f), 4f)
         dottedPaint!!.strokeWidth = 1f
-        // 实例化路径
         val mPath = Path()
         mPath.reset()
-        // 定义路径的起点
         mPath.moveTo(startX, startY)
         mPath.lineTo(stopX, stopY)
         canvas.drawPath(mPath, dottedPaint!!)

@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
 
                 when(position){
                    0->{
-                      view.pieChart.visibility=View.VISIBLE
+                       view.pieChart.visibility=View.VISIBLE
                        view.pieChart.setList(list)
                        view.pieChart.onSelectedListener=object : OnSelectedListener{
                            override fun onSelectedListener(index: Int, partModel: PartModel) {

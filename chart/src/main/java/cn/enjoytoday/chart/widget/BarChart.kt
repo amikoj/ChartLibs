@@ -221,7 +221,6 @@ class BarChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
         /**
          * 对list进行排序,按降序排列
          */
-        log(message = "setlist,and list size:${list.size}")
         listBar = list
         currentIndex=listBar.size/2
 
@@ -245,7 +244,6 @@ class BarChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
      */
     fun calculateCoordinate(isMoving:Boolean,moved:Float=0f){
         if (listBar.size==0) return
-        log(message = "calcuateCooridnate")
         if (isMoving){
             /**
              * 移动操作
@@ -277,8 +275,6 @@ class BarChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
 
                 partModel.startAngle=gap+index*(unitWidth+gap)
                 partModel.sweep=partModel.value*(height-3*padding-textHeight)/max
-
-                log(message = "sweep:${partModel.sweep}")
             }
 
 
@@ -318,9 +314,6 @@ private var rectF: RectF = RectF()
         rectF.set(0f,padding,width,height-textHeight-padding)
         paint.color=bgColor
         canvas.drawRect(rectF,paint)
-
-        log(message = "height:$height,and width:$width")
-
         /**
          * 坐标轴
          */
@@ -331,7 +324,7 @@ private var rectF: RectF = RectF()
         if (listBar.size>0) {
             listBar.forEachIndexed { index, partModel ->
                 if (partModel.startAngle>=0-unitWidth && partModel.startAngle<=width+unitWidth){
-                    log(message = "partmodel startAngle:${partModel.startAngle} value:${partModel.value},sweep:${partModel.sweep}")
+//                    log(message = "partmodel startAngle:${partModel.startAngle} value:${partModel.value},sweep:${partModel.sweep}")
                     /**
                      * 范围内绘制
                      */
