@@ -80,14 +80,17 @@ class MainActivity : AppCompatActivity() {
                         view.lineChart.monthText=lables
                         view.lineChart.score=sums
 
-                        view.text_view.visibility=View.GONE
+                        view.lineChart.onSelectedListener=object :OnSelectedListener{
+                            override fun onSelectedListener(index: Int, partModel: PartModel) {
+                                view.text_view.text="${partModel.value}"
+                            }
+
+                        }
                     }
 
                     2->{
                         view.barChart.visibility=View.VISIBLE
                         view.barChart.setList(list)
-                        view.barChart.max=90f
-
                         view.barChart.onSelectedListener=object : OnSelectedListener{
                             override fun onSelectedListener(index: Int, partModel: PartModel) {
                                 view.text_view.text="${partModel.value}"

@@ -6,6 +6,8 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import cn.enjoytoday.chart.OnSelectedListener
+import cn.enjoytoday.chart.PartModel
 import cn.enjoytoday.chart.R
 import cn.enjoytoday.chart.dip2px
 import java.util.ArrayList
@@ -50,6 +52,7 @@ class LineChart(context: Context, attrs: AttributeSet?, defStyleAttr: Int): View
     private var brokenPath: Path? = null
 
 
+    var onSelectedListener:OnSelectedListener?=null
 
     init {
         requestFocus()
@@ -255,6 +258,8 @@ class LineChart(context: Context, attrs: AttributeSet?, defStyleAttr: Int): View
                 textPaint!!.color = 0xffffffff.toInt()
                 //绘制浮动文字
                 canvas.drawText(score[i].toString(), scorePoints!![i].x.toFloat(), (scorePoints!![i].y - dip2px(context,5f) - textSize), textPaint!!)
+
+                onSelectedListener?.onSelectedListener(i, PartModel(score[i]))
             }
             brokenPaint!!.color = 0xffffffff.toInt()
             canvas.drawCircle(scorePoints!![i].x.toFloat(), scorePoints!![i].y.toFloat(), dip2px(context,1.5f), brokenPaint!!)
@@ -323,6 +328,9 @@ class LineChart(context: Context, attrs: AttributeSet?, defStyleAttr: Int): View
                 r2.right = coordinateX + textWidth + dip2px(context,4f)
                 r2.bottom = viewHeight * 0.7f + dip2px(context,4f) + textSize + dip2px(context,8f)
                 canvas.drawRoundRect(r2, 10f, 10f, textPaint!!)
+
+
+
             }
 
 

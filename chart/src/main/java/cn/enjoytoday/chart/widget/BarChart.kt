@@ -264,6 +264,15 @@ class BarChart(context: Context, attributeset: AttributeSet?, defStyleAttr:Int):
             /**
              * 确认坐标
              */
+
+            max=0f
+            listBar.forEach({
+                if (it.value>max){
+                    max=it.value
+                }
+            })
+
+
             listBar.forEachIndexed { index, partModel ->
 
                 partModel.startAngle=gap+index*(unitWidth+gap)
