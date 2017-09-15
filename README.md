@@ -79,7 +79,7 @@
 ### 饼图
 PieChart
 
-![PieChart](screenShorts/chart1.chart0.png)
+![PieChart](screenShorts/chart0.png)
 
 使用方法:
 ```
